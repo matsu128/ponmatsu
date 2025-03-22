@@ -1,0 +1,19 @@
+{
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "build": {
+    "env": {
+      "NODE_OPTIONS": "--max_old_space_size=4096",
+      "AWS_REGION": "ap-northeast-1",
+      "NEXT_PUBLIC_AWS_REGION": "ap-northeast-1"
+    }
+  },
+  "env": {
+    "AWS_REGION": "ap-northeast-1",
+    "NEXT_PUBLIC_AWS_REGION": "ap-northeast-1"
+  }
+} 

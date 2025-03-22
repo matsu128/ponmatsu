@@ -1,0 +1,14 @@
+.vercel
+.next
+node_modules
+.env
+.env.local
+.DS_Store
+# キャッシュディレクトリ
+.next/cache/
+# ビルド出力
+build/
+dist/
+# その他の一時ファイル
+*.log
+.cache/
