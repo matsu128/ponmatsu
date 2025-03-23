@@ -134,137 +134,38 @@ export const dummyData: HomePageData = {
   rankings: [
     {
       id: '1',
-      title: 'ぽんまつの料理配信',
-      votes: 42,
+      title: '屋台飯アレンジ企画',
+      votes: 120,
       hasVoted: false,
-      description: 'ぽんまつさんが得意な料理を紹介する配信。和食から洋食まで、視聴者と一緒に楽しく料理を作る企画です。食材の選び方から盛り付けまで、細かいポイントも解説します。'
+      description: '福岡の屋台メニューを家で簡単に作れるアレンジレシピを紹介！屋台の雰囲気も演出しながら、みんなで楽しめる料理動画を作りたいです。'
     },
     {
       id: '2',
-      title: 'ゲーム実況配信',
-      votes: 38,
-      hasVoted: false,
-      description: '新作から懐かしのレトロゲームまで、ぽんまつさんが実況プレイ。視聴者参加型の企画も織り交ぜながら、ゲームの面白さを共有していきます。'
+      title: '朝市で食材調達＆料理',
+      votes: 98,
+      hasVoted: true,
+      description: '早朝の市場で新鮮な食材を調達して、即興で料理を考案。市場の活気ある雰囲気と共に、食材選びのコツも紹介する朝ごはん動画です。'
     },
     {
       id: '3',
-      title: '特製ぽんまつ定食',
-      votes: 1250,
+      title: '季節の駅弁開封レビュー',
+      votes: 85,
       hasVoted: false,
+      description: '全国の美味しい季節限定駅弁を実食レビュー。パッケージや盛り付け、味の感想はもちろん、その土地ならではの食文化も紹介します。'
     },
     {
       id: '4',
-      title: 'ぽんまつカレー',
-      votes: 1180,
-      hasVoted: true,
+      title: '激辛グルメチャレンジ',
+      votes: 72,
+      hasVoted: false,
+      description: '福岡で話題の激辛メニューに挑戦！汗だくになりながらも美味しく食べるコツを伝授。視聴者と一緒に激辛レベルを決めていきます。'
     },
     {
       id: '5',
-      title: 'ぽんまつパスタ',
-      votes: 1120,
+      title: '野菜たっぷりスイーツ',
+      votes: 65,
       hasVoted: false,
-    },
-    {
-      id: '6',
-      title: '季節の天ぷら定食',
-      votes: 980,
-      hasVoted: false,
-    },
-    {
-      id: '7',
-      title: 'ぽんまつうどん',
-      votes: 920,
-      hasVoted: false,
-    },
-    {
-      id: '8',
-      title: '特製サラダ',
-      votes: 850,
-      hasVoted: false,
-    },
-    {
-      id: '9',
-      title: 'ぽんまつ丼',
-      votes: 820,
-      hasVoted: false,
-    },
-    {
-      id: '10',
-      title: '野菜たっぷりスープ',
-      votes: 780,
-      hasVoted: false,
-    },
-    {
-      id: '11',
-      title: 'ぽんまつピザ',
-      votes: 750,
-      hasVoted: false,
-    },
-    {
-      id: '12',
-      title: '特製デザート',
-      votes: 720,
-      hasVoted: false,
-    },
-    {
-      id: '13',
-      title: 'ぽんまつサンドイッチ',
-      votes: 680,
-      hasVoted: false,
-    },
-    {
-      id: '14',
-      title: '季節の炊き込みご飯',
-      votes: 650,
-      hasVoted: false,
-    },
-    {
-      id: '15',
-      title: 'ぽんまつオムライス',
-      votes: 620,
-      hasVoted: false,
-    },
-    {
-      id: '16',
-      title: '特製グラタン',
-      votes: 580,
-      hasVoted: false,
-    },
-    {
-      id: '17',
-      title: 'ぽんまつラーメン',
-      votes: 550,
-      hasVoted: false,
-    },
-    {
-      id: '18',
-      title: '季節の煮物',
-      votes: 520,
-      hasVoted: false,
-    },
-    {
-      id: '19',
-      title: 'ぽんまつ焼き魚定食',
-      votes: 480,
-      hasVoted: false,
-    },
-    {
-      id: '20',
-      title: '特製スイーツ',
-      votes: 450,
-      hasVoted: false,
-    },
-    {
-      id: '21',
-      title: 'ぽんまつ餃子',
-      votes: 420,
-      hasVoted: false,
-    },
-    {
-      id: '22',
-      title: '季節の和菓子',
-      votes: 400,
-      hasVoted: false,
+      description: '意外な野菜を使ったヘルシースイーツの作り方。見た目も味も楽しめる、野菜嫌いさんでも食べられる魔法のスイーツレシピをご紹介！'
     }
   ],
   recipes: [

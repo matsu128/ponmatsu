@@ -37,7 +37,7 @@ export const SocialLinks = () => {
               rel="noopener noreferrer"
               className="flex items-center justify-center"
             >
-              <link.icon className="text-xl text-gray-700" />
+              <link.icon className="text-2xl text-gray-700" />
             </Link>
           ))}
         </div>

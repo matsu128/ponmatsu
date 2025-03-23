@@ -5,7 +5,7 @@ import React from 'react';
 interface ButtonProps {
   onClick?: () => void;
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'outline' | 'error';
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
   fullWidth?: boolean;
@@ -29,6 +29,7 @@ export const Button: React.FC<ButtonProps> = ({
     primary: 'bg-primary-500 text-white hover:bg-primary-600',
     secondary: 'bg-gray-100 text-gray-800 hover:bg-gray-200',
     outline: 'border-2 border-primary-500 text-primary-500 hover:bg-primary-50',
+    error: 'bg-red-500 text-white hover:bg-red-600',
   };
 
   const sizeStyles = {

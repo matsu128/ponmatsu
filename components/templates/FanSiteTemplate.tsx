@@ -7,6 +7,7 @@ import { RankingList } from '../organisms/RankingList';
 import { IdeaPostForm } from '../organisms/IdeaPostForm';
 import { Modal } from '../molecules/Modal';
 import { Text } from '../atoms/Text';
+import { SocialLinks } from '../molecules/SocialLinks';
 
 interface FanSiteTemplateProps {
   title: string;
@@ -58,7 +59,7 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
 
   // 表示件数の状態管理
   const [newsDisplayCount, setNewsDisplayCount] = useState(2);
-  const [rankingDisplayCount, setRankingDisplayCount] = useState(5);
+  const [rankingDisplayCount, setRankingDisplayCount] = useState(3);
 
   // ニュースモーダルを開く
   const handleNewsClick = (id: string) => {
@@ -109,8 +110,13 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
           isLoggedIn={isLoggedIn}
         />
         
-        <main className="container mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <main className="container mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            {/* SNSリンクエリア */}
+            <div className="lg:col-span-12 mb-2">
+              <SocialLinks />
+            </div>
+
             {/* ニュースエリア */}
             <div className="lg:col-span-7">
               <div className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-6">
@@ -152,23 +158,47 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                   items={newsItems.slice(0, newsDisplayCount)}
                   onNewsClick={handleNewsClick}
                 />
-                {newsDisplayCount < newsItems.length && (
+                {newsDisplayCount < newsItems.length ? (
                   <div className="mt-6">
-                    <div className={`grid ${newsDisplayCount > 2 ? 'grid-cols-2' : 'grid-cols-1'} gap-3`}>
+                    <div className="relative flex items-center justify-center">
                       <button
                         onClick={handleShowMoreNews}
-                        className={`group relative py-3 transition-all duration-500 ${newsDisplayCount <= 2 ? 'col-span-1' : ''}`}
+                        className="group relative py-3 transition-all duration-500"
                       >
-                        <div className="absolute inset-x-0 h-[0.5px] bg-gradient-to-r from-transparent via-gray-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        <div className="flex items-center justify-center space-x-1.5">
+                        {newsDisplayCount <= 2 && (
+                          <>
+                            <div className="absolute inset-x-0 h-[0.5px] bg-gradient-to-r from-transparent via-gray-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="absolute inset-x-0 bottom-0 h-[0.5px] bg-gradient-to-r from-transparent via-gray-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                          </>
+                        )}
+                        <div className="flex items-center justify-center">
                           <span className="text-sm font-light tracking-wider text-gray-500 group-hover:text-gray-700 transition-colors duration-500">
                             もっと見る
                           </span>
-                          <span className="text-[10px] font-light text-gray-400 group-hover:text-gray-500 transition-colors duration-500">
-                            {newsDisplayCount}/{newsItems.length}
-                          </span>
                         </div>
-                        <div className="absolute inset-x-0 bottom-0 h-[0.5px] bg-gradient-to-r from-transparent via-gray-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      </button>
+                      {newsDisplayCount > 2 && (
+                        <button
+                          onClick={() => setNewsDisplayCount(2)}
+                          className="absolute right-0 group p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                        >
+                          <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-6">
+                    <div className="relative flex items-center justify-center">
+                      <button
+                        onClick={() => setNewsDisplayCount(2)}
+                        className="absolute right-0 group p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                      >
+                        <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                       </button>
                     </div>
                   </div>
@@ -199,9 +229,9 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                           {rankingDisplayCount}/{rankingItems.length}
                         </Text>
                       </div>
-                      {rankingDisplayCount > 5 && (
+                      {rankingDisplayCount > 3 && (
                         <button
-                          onClick={() => setRankingDisplayCount(5)}
+                          onClick={() => setRankingDisplayCount(3)}
                           className="ml-2 group p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200"
                         >
                           <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -229,23 +259,47 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                   _onVoteClick={onVoteClick}
                   onItemClick={handleRankingClick}
                 />
-                {rankingDisplayCount < rankingItems.length && (
+                {rankingDisplayCount < rankingItems.length ? (
                   <div className="mt-6">
-                    <div className={`grid ${rankingDisplayCount > 5 ? 'grid-cols-2' : 'grid-cols-1'} gap-3`}>
+                    <div className="relative flex items-center justify-center">
                       <button
                         onClick={handleShowMoreRankings}
-                        className={`group relative py-3 transition-all duration-500 ${rankingDisplayCount <= 5 ? 'col-span-1' : ''}`}
+                        className="group relative py-3 transition-all duration-500"
                       >
-                        <div className="absolute inset-x-0 h-[0.5px] bg-gradient-to-r from-transparent via-gray-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        <div className="flex items-center justify-center space-x-1.5">
+                        {rankingDisplayCount <= 3 && (
+                          <>
+                            <div className="absolute inset-x-0 h-[0.5px] bg-gradient-to-r from-transparent via-gray-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="absolute inset-x-0 bottom-0 h-[0.5px] bg-gradient-to-r from-transparent via-gray-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                          </>
+                        )}
+                        <div className="flex items-center justify-center">
                           <span className="text-sm font-light tracking-wider text-gray-500 group-hover:text-gray-700 transition-colors duration-500">
                             もっと見る
                           </span>
-                          <span className="text-[10px] font-light text-gray-400 group-hover:text-gray-500 transition-colors duration-500">
-                            {rankingDisplayCount}/{rankingItems.length}
-                          </span>
                         </div>
-                        <div className="absolute inset-x-0 bottom-0 h-[0.5px] bg-gradient-to-r from-transparent via-gray-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      </button>
+                      {rankingDisplayCount > 3 && (
+                        <button
+                          onClick={() => setRankingDisplayCount(3)}
+                          className="absolute right-0 group p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                        >
+                          <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-6">
+                    <div className="relative flex items-center justify-center">
+                      <button
+                        onClick={() => setRankingDisplayCount(3)}
+                        className="absolute right-0 group p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                      >
+                        <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                       </button>
                     </div>
                   </div>

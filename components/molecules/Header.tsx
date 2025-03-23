@@ -19,7 +19,10 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="flex items-center justify-between px-4 sm:px-6 py-3">
       <Link href="/" className="hover:opacity-80 transition-opacity">
-        <Text variant="h1" className="text-lg sm:text-xl font-bold text-primary-600">
+        <Text 
+          variant="h1" 
+          className="text-lg sm:text-xl font-bold !text-primary-600"
+        >
           {title}
         </Text>
       </Link>

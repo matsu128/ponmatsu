@@ -38,7 +38,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           <div className="flex">
             {/* ロゴ/タイトル */}
             <div className="flex-shrink-0 flex items-center">
-              <Link href="/" className="text-lg font-bold text-gray-800">
+              <Link href="/" className="text-lg font-bold text-primary-600">
                 {title}
               </Link>
             </div>
