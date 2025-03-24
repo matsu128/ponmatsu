@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HeaderNav } from '../organisms/HeaderNav';
 import { NewsList } from '../organisms/NewsList';
 import { RankingList } from '../organisms/RankingList';
@@ -42,6 +42,7 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showNewsModal, setShowNewsModal] = useState(false);
   const [showIdeaModal, setShowIdeaModal] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const [selectedNews, setSelectedNews] = useState<{
     id: string;
     title: string;
@@ -60,6 +61,25 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
   // 表示件数の状態管理
   const [newsDisplayCount, setNewsDisplayCount] = useState(2);
   const [rankingDisplayCount, setRankingDisplayCount] = useState(3);
+
+  // スクロール位置の監視
+  useEffect(() => {
+    const handleScroll = () => {
+      const categoryNav = document.getElementById('category-nav');
+      if (categoryNav) {
+        const categoryNavPosition = categoryNav.getBoundingClientRect().top;
+        setShowScrollTop(categoryNavPosition < 0);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // トップへスクロール
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // ニュースモーダルを開く
   const handleNewsClick = (id: string) => {
@@ -119,10 +139,10 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
 
             {/* ニュースエリア */}
             <div className="lg:col-span-7">
-              <div className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-6">
-                <div className="mb-4">
-                  <div className="grid grid-cols-5 gap-2 mb-3">
-                    <div className="col-span-3 flex justify-center">
+              <div className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-3">
+                <div className="mb-2">
+                  <div className="grid grid-cols-5 gap-2 mb-2">
+                    <div className="col-span-5 flex justify-center">
                       <Text 
                         variant="h2" 
                         className="text-base sm:text-lg lg:text-xl font-bold text-primary-600 truncate"
@@ -130,85 +150,75 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                         ぽんまつニュース
                       </Text>
                     </div>
-                    <div className="col-span-2 flex justify-end items-center">
-                      <div className="px-2 py-0.5 bg-primary-100 rounded-full">
-                        <Text 
-                          variant="caption" 
-                          color="primary" 
-                          className="text-xs font-medium"
-                        >
-                          {newsDisplayCount}/{newsItems.length}
+                  </div>
+                </div>
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3">
+                  <div className="space-y-1.5 max-h-[160px] overflow-y-auto">
+                    {newsItems.map((item) => (
+                      <div 
+                        key={item.id} 
+                        className="border-b border-gray-100 last:border-0 pb-1.5 last:pb-0 cursor-pointer hover:bg-gray-50 transition-colors duration-150"
+                        onClick={() => handleNewsClick(item.id)}
+                      >
+                        <Text variant="body" className="text-sm text-gray-900">
+                          {item.title}
+                        </Text>
+                        <Text variant="caption" className="text-xs text-gray-500">
+                          {new Date(item.date).toLocaleDateString('ja-JP')}
                         </Text>
                       </div>
-                      {newsDisplayCount > 2 && (
-                        <button
-                          onClick={() => setNewsDisplayCount(2)}
-                          className="ml-2 group p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                        >
-                          <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                      )}
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* カテゴリーナビゲーション */}
+            <div id="category-nav" className="lg:col-span-5 mb-6">
+              <div className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-6">
+                <div className="mb-4">
+                  <div className="relative flex justify-end items-center">
+                    <div className="absolute inset-x-0 flex justify-center">
+                      <Text 
+                        variant="h2" 
+                        className="text-lg sm:text-xl font-bold text-primary-600"
+                      >
+                        カテゴリー
+                      </Text>
                     </div>
                   </div>
                 </div>
-                <NewsList
-                  _title="ニュース一覧"
-                  items={newsItems.slice(0, newsDisplayCount)}
-                  onNewsClick={handleNewsClick}
-                />
-                {newsDisplayCount < newsItems.length ? (
-                  <div className="mt-6">
-                    <div className="relative flex items-center justify-center">
-                      <button
-                        onClick={handleShowMoreNews}
-                        className="group relative py-3 transition-all duration-500"
-                      >
-                        {newsDisplayCount <= 2 && (
-                          <>
-                            <div className="absolute inset-x-0 h-[0.5px] bg-gradient-to-r from-transparent via-gray-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            <div className="absolute inset-x-0 bottom-0 h-[0.5px] bg-gradient-to-r from-transparent via-gray-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                          </>
-                        )}
-                        <div className="flex items-center justify-center">
-                          <span className="text-sm font-light tracking-wider text-gray-500 group-hover:text-gray-700 transition-colors duration-500">
-                            もっと見る
-                          </span>
-                        </div>
-                      </button>
-                      {newsDisplayCount > 2 && (
-                        <button
-                          onClick={() => setNewsDisplayCount(2)}
-                          className="absolute right-0 group p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                        >
-                          <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="mt-6">
-                    <div className="relative flex items-center justify-center">
-                      <button
-                        onClick={() => setNewsDisplayCount(2)}
-                        className="absolute right-0 group p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      >
-                        <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                )}
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    onClick={() => {
+                      const element = document.getElementById('voting-box');
+                      element?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="py-1.5 px-3 bg-white/90 backdrop-blur-sm rounded-lg border border-gray-200/80 hover:bg-white hover:shadow-sm transition-all duration-200 group"
+                  >
+                    <Text variant="body" className="text-sm font-medium text-gray-600 group-hover:text-gray-900">
+                      投票箱
+                    </Text>
+                  </button>
+                  <button
+                    onClick={() => {
+                      const element = document.getElementById('question-box');
+                      element?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="py-1.5 px-3 bg-white/90 backdrop-blur-sm rounded-lg border border-gray-200/80 hover:bg-white hover:shadow-sm transition-all duration-200 group"
+                  >
+                    <Text variant="body" className="text-sm font-medium text-gray-600 group-hover:text-gray-900">
+                      質問箱
+                    </Text>
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* 右サイドエリア */}
             <div className="lg:col-span-5 space-y-6 mb-12">
-              <div className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-6">
+              {/* 投票箱 */}
+              <div id="voting-box" className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-3">
                 <div className="mb-4">
                   <div className="relative flex justify-end items-center mb-2">
                     <div className="absolute inset-x-0 flex justify-center">
@@ -306,6 +316,27 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                 )}
               </div>
               
+              {/* 質問箱 */}
+              <div id="question-box" className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-3">
+                <div className="mb-4">
+                  <div className="relative flex justify-end items-center mb-2">
+                    <div className="absolute inset-x-0 flex justify-center">
+                      <Text 
+                        variant="h2" 
+                        className="text-lg sm:text-xl font-bold text-primary-600"
+                      >
+                        質問箱
+                      </Text>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3">
+                  <Text variant="body" className="text-sm text-gray-600 text-center">
+                    準備中...
+                  </Text>
+                </div>
+              </div>
+
               {/* アイディア投稿ボタン */}
               <div className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-6">
                 <button
@@ -318,6 +349,27 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
             </div>
           </div>
         </main>
+
+        {/* トップへ戻るボタン */}
+        <div
+          className={`fixed right-4 bottom-4 z-50 transform transition-all duration-300 ${
+            showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
+          }`}
+        >
+          <button
+            onClick={scrollToTop}
+            className="p-2 bg-white/90 backdrop-blur-sm rounded-full border border-gray-200/80 shadow-lg hover:shadow-xl hover:bg-white transition-all duration-300 group"
+          >
+            <svg
+              className="w-3.5 h-3.5 text-gray-600 group-hover:text-primary-600 transform group-hover:-translate-y-0.5 transition-all duration-300"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* モーダル（ルートレベルで表示） */}
