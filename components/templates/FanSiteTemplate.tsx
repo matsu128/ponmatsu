@@ -8,6 +8,8 @@ import { IdeaPostForm } from '../organisms/IdeaPostForm';
 import { Modal } from '../molecules/Modal';
 import { Text } from '../atoms/Text';
 import { SocialLinks } from '../molecules/SocialLinks';
+import { QuestionBox } from '../organisms/QuestionBox';
+import { QuestionForm } from '../organisms/QuestionForm';
 
 interface FanSiteTemplateProps {
   title: string;
@@ -25,6 +27,7 @@ interface FanSiteTemplateProps {
   _onLoginClick?: () => void;
   isLoggedIn?: boolean;
   onIdeaSubmit?: (data: { title: string; description: string }) => void;
+  onQuestionSubmit?: (data: { category: string; question: string }) => void;
 }
 
 export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
@@ -37,6 +40,7 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
   _onLoginClick,
   isLoggedIn,
   onIdeaSubmit,
+  onQuestionSubmit,
 }) => {
   // モーダルの状態管理
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -57,6 +61,7 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
     hasVoted: boolean;
     description?: string;
   } | null>(null);
+  const [showQuestionModal, setShowQuestionModal] = useState(false);
 
   // 表示件数の状態管理
   const [newsDisplayCount, setNewsDisplayCount] = useState(2);
@@ -112,6 +117,11 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
       setSelectedRanking(rankingItem);
       setShowRankingModal(true);
     }
+  };
+
+  // 質問フォームの送信ハンドラ
+  const handleQuestionSubmit = (data: { category: string; question: string }) => {
+    onQuestionSubmit?.(data);
   };
 
   return (
@@ -189,28 +199,38 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <button
-                    onClick={() => {
-                      const element = document.getElementById('voting-box');
-                      element?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="py-1.5 px-3 bg-white/90 backdrop-blur-sm rounded-lg border border-gray-200/80 hover:bg-white hover:shadow-sm transition-all duration-200 group"
-                  >
-                    <Text variant="body" className="text-sm font-medium text-gray-600 group-hover:text-gray-900">
-                      投票箱
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => {
+                        const element = document.getElementById('voting-box');
+                        element?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="w-full py-1.5 px-3 bg-white/90 backdrop-blur-sm rounded-lg border border-gray-200/80 hover:bg-white hover:shadow-sm transition-all duration-200 group"
+                    >
+                      <Text variant="body" className="text-sm font-medium text-gray-600 group-hover:text-gray-900">
+                        投票箱
+                      </Text>
+                    </button>
+                    <Text variant="caption" className="text-xs text-gray-500 text-center">
+                      人気ランキングに投票
                     </Text>
-                  </button>
-                  <button
-                    onClick={() => {
-                      const element = document.getElementById('question-box');
-                      element?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="py-1.5 px-3 bg-white/90 backdrop-blur-sm rounded-lg border border-gray-200/80 hover:bg-white hover:shadow-sm transition-all duration-200 group"
-                  >
-                    <Text variant="body" className="text-sm font-medium text-gray-600 group-hover:text-gray-900">
-                      質問箱
+                  </div>
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => {
+                        const element = document.getElementById('question-box');
+                        element?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="w-full py-1.5 px-3 bg-white/90 backdrop-blur-sm rounded-lg border border-gray-200/80 hover:bg-white hover:shadow-sm transition-all duration-200 group"
+                    >
+                      <Text variant="body" className="text-sm font-medium text-gray-600 group-hover:text-gray-900">
+                        質問箱
+                      </Text>
+                    </button>
+                    <Text variant="caption" className="text-xs text-gray-500 text-center">
+                      ぽんまつに質問
                     </Text>
-                  </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -330,11 +350,7 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                     </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3">
-                  <Text variant="body" className="text-sm text-gray-600 text-center">
-                    準備中...
-                  </Text>
-                </div>
+                <QuestionBox onQuestionClick={() => setShowQuestionModal(true)} />
               </div>
 
               {/* アイディア投稿ボタン */}
@@ -361,7 +377,7 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
             className="p-2 bg-white/90 backdrop-blur-sm rounded-full border border-gray-200/80 shadow-lg hover:shadow-xl hover:bg-white transition-all duration-300 group"
           >
             <svg
-              className="w-3.5 h-3.5 text-gray-600 group-hover:text-primary-600 transform group-hover:-translate-y-0.5 transition-all duration-300"
+              className="w-4 h-4 text-gray-600 group-hover:text-primary-600 transform group-hover:-translate-y-0.5 transition-all duration-300"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -486,6 +502,13 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
           </div>
         )}
       </Modal>
+
+      {/* 質問フォームモーダル */}
+      <QuestionForm
+        isOpen={showQuestionModal}
+        onClose={() => setShowQuestionModal(false)}
+        onSubmit={handleQuestionSubmit}
+      />
     </>
   );
 }; 
