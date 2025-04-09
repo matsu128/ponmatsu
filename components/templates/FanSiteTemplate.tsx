@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { HeaderNav } from '../organisms/HeaderNav';
 import { NewsList } from '../organisms/NewsList';
 import { RankingList } from '../organisms/RankingList';
@@ -10,6 +10,7 @@ import { Text } from '../atoms/Text';
 import { SocialLinks } from '../molecules/SocialLinks';
 import { QuestionBox } from '../organisms/QuestionBox';
 import { QuestionForm } from '../organisms/QuestionForm';
+import { motion, useInView } from 'framer-motion';
 
 interface FanSiteTemplateProps {
   title: string;
@@ -124,6 +125,171 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
     onQuestionSubmit?.(data);
   };
 
+  // アニメーション用のバリアント
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 100,
+        damping: 10,
+      },
+    },
+  };
+
+  const fadeInVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+      },
+    },
+  };
+
+  const scaleInVariants = {
+    hidden: { scale: 0.9, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 100,
+        damping: 10,
+      },
+    },
+  };
+
+  const slideInVariants = {
+    hidden: { x: -20, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 100,
+        damping: 10,
+      },
+    },
+  };
+
+  const scrollRevealVariants = {
+    hidden: { y: 50, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 100,
+        damping: 15,
+        duration: 0.5,
+      },
+    },
+  };
+
+  const scrollRevealLeftVariants = {
+    hidden: { x: -50, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 100,
+        damping: 15,
+        duration: 0.5,
+      },
+    },
+  };
+
+  const scrollRevealRightVariants = {
+    hidden: { x: 50, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 100,
+        damping: 15,
+        duration: 0.5,
+      },
+    },
+  };
+
+  // スクロールアニメーション用のref
+  const newsRef = useRef(null);
+  const categoryRef = useRef(null);
+  const votingBoxRef = useRef(null);
+  const questionBoxRef = useRef(null);
+  const ideaRef = useRef(null);
+
+  // スクロールアニメーション用のinView
+  const newsInView = useInView(newsRef, { once: true, amount: 0.2 });
+  const categoryInView = useInView(categoryRef, { once: true, amount: 0.2 });
+  const votingBoxInView = useInView(votingBoxRef, { once: true, amount: 0.2 });
+  const questionBoxInView = useInView(questionBoxRef, { once: true, amount: 0.2 });
+  const ideaInView = useInView(ideaRef, { once: true, amount: 0.2 });
+
+  const categoryItems = [
+    {
+      label: '投票箱',
+      description: '人気ランキングに投票',
+      action: 'scroll',
+      targetId: 'voting-box',
+      disabled: false,
+    },
+    {
+      label: '質問箱',
+      description: 'ぽんまつに質問',
+      action: 'scroll',
+      targetId: 'question-box',
+      disabled: false,
+    },
+    {
+      label: 'レシピ',
+      description: 'お取り寄せレシピ',
+      action: 'link',
+      href: '/recipe',
+      disabled: false,
+    },
+    {
+      label: 'SHOP',
+      description: '準備中',
+      action: 'none',
+      disabled: true,
+    },
+    {
+      label: '自己紹介',
+      description: 'メンバー紹介',
+      action: 'link',
+      href: '/about',
+      disabled: false,
+    },
+  ];
+
+  const handleCategoryClick = (item: typeof categoryItems[0]) => {
+    if (item.disabled) return;
+    
+    if (item.action === 'scroll' && item.targetId) {
+      const element = document.getElementById(item.targetId);
+      element?.scrollIntoView({ behavior: 'smooth' });
+    } else if (item.action === 'link' && item.href) {
+      window.location.href = item.href;
+    }
+  };
+
   return (
     <>
       <div 
@@ -133,22 +299,42 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
         }}
       >
         {/* メインコンテンツ */}
-        <HeaderNav
-          title={title}
-          _navItems={navItems}
-          onLoginClick={() => setShowLoginModal(true)}
-          isLoggedIn={isLoggedIn}
-        />
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={fadeInVariants}
+        >
+          <HeaderNav
+            title={title}
+            _navItems={navItems}
+            onLoginClick={() => setShowLoginModal(true)}
+            isLoggedIn={isLoggedIn}
+          />
+        </motion.div>
         
         <main className="container mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <motion.div 
+            className="grid grid-cols-1 lg:grid-cols-12 gap-4"
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+          >
             {/* SNSリンクエリア */}
-            <div className="lg:col-span-12 mb-2">
+            <motion.div 
+              className="lg:col-span-12 mb-2"
+              variants={itemVariants}
+            >
               <SocialLinks />
-            </div>
+            </motion.div>
 
             {/* ニュースエリア */}
-            <div className="lg:col-span-7">
+            <motion.div 
+              ref={newsRef}
+              className="lg:col-span-7"
+              initial="hidden"
+              animate={newsInView ? "visible" : "hidden"}
+              variants={scrollRevealLeftVariants}
+            >
               <div className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-3">
                 <div className="mb-2">
                   <div className="grid grid-cols-5 gap-2 mb-2">
@@ -164,11 +350,14 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                 </div>
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3">
                   <div className="space-y-1.5 max-h-[160px] overflow-y-auto">
-                    {newsItems.map((item) => (
-                      <div 
+                    {newsItems.map((item, index) => (
+                      <motion.div 
                         key={item.id} 
                         className="border-b border-gray-100 last:border-0 pb-1.5 last:pb-0 cursor-pointer hover:bg-gray-50 transition-colors duration-150"
                         onClick={() => handleNewsClick(item.id)}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 * index, duration: 0.3 }}
                       >
                         <Text variant="body" className="text-sm text-gray-900">
                           {item.title}
@@ -176,15 +365,22 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                         <Text variant="caption" className="text-xs text-gray-500">
                           {new Date(item.date).toLocaleDateString('ja-JP')}
                         </Text>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* カテゴリーナビゲーション */}
-            <div id="category-nav" className="lg:col-span-5 mb-6">
+            <motion.div 
+              ref={categoryRef}
+              id="category-nav" 
+              className="lg:col-span-5 mb-6"
+              initial="hidden"
+              animate={categoryInView ? "visible" : "hidden"}
+              variants={scrollRevealRightVariants}
+            >
               <div className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-6">
                 <div className="mb-4">
                   <div className="relative flex justify-end items-center">
@@ -199,46 +395,59 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <button
-                      onClick={() => {
-                        const element = document.getElementById('voting-box');
-                        element?.scrollIntoView({ behavior: 'smooth' });
-                      }}
-                      className="w-full py-1.5 px-3 bg-white/90 backdrop-blur-sm rounded-lg border border-gray-200/80 hover:bg-white hover:shadow-sm transition-all duration-200 group"
+                  {categoryItems.map((item, index) => (
+                    <motion.div 
+                      key={item.label}
+                      className="space-y-1"
+                      variants={itemVariants}
+                      whileHover={{ scale: 1.03 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                     >
-                      <Text variant="body" className="text-sm font-medium text-gray-600 group-hover:text-gray-900">
-                        投票箱
+                      <button
+                        onClick={() => handleCategoryClick(item)}
+                        disabled={item.disabled}
+                        className={`w-full py-1.5 px-3 ${
+                          item.disabled
+                            ? 'bg-gray-200 backdrop-blur-sm rounded-lg border border-gray-200/50 cursor-not-allowed'
+                            : 'bg-white/90 backdrop-blur-sm rounded-lg border border-gray-200/80 hover:bg-white hover:shadow-sm transition-all duration-200 group'
+                        }`}
+                      >
+                        <Text 
+                          variant="body" 
+                          className={`text-sm font-medium ${
+                            item.disabled
+                              ? 'text-gray-600'
+                              : 'text-gray-600 group-hover:text-gray-900'
+                          }`}
+                        >
+                          {item.label}
+                        </Text>
+                      </button>
+                      <Text variant="caption" className="text-xs text-gray-500 text-center">
+                        {item.description}
                       </Text>
-                    </button>
-                    <Text variant="caption" className="text-xs text-gray-500 text-center">
-                      人気ランキングに投票
-                    </Text>
-                  </div>
-                  <div className="space-y-1">
-                    <button
-                      onClick={() => {
-                        const element = document.getElementById('question-box');
-                        element?.scrollIntoView({ behavior: 'smooth' });
-                      }}
-                      className="w-full py-1.5 px-3 bg-white/90 backdrop-blur-sm rounded-lg border border-gray-200/80 hover:bg-white hover:shadow-sm transition-all duration-200 group"
-                    >
-                      <Text variant="body" className="text-sm font-medium text-gray-600 group-hover:text-gray-900">
-                        質問箱
-                      </Text>
-                    </button>
-                    <Text variant="caption" className="text-xs text-gray-500 text-center">
-                      ぽんまつに質問
-                    </Text>
-                  </div>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* 右サイドエリア */}
-            <div className="lg:col-span-5 space-y-6 mb-12">
+            <motion.div 
+              className="lg:col-span-5 space-y-6 mb-12"
+              variants={containerVariants}
+            >
               {/* 投票箱 */}
-              <div id="voting-box" className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-3">
+              <motion.div 
+                ref={votingBoxRef}
+                id="voting-box" 
+                className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-3"
+                initial="hidden"
+                animate={votingBoxInView ? "visible" : "hidden"}
+                variants={scrollRevealVariants}
+                whileHover={{ y: -5 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+              >
                 <div className="mb-4">
                   <div className="relative flex justify-end items-center mb-2">
                     <div className="absolute inset-x-0 flex justify-center">
@@ -262,7 +471,7 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                       {rankingDisplayCount > 3 && (
                         <button
                           onClick={() => setRankingDisplayCount(3)}
-                          className="ml-2 group p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                          className="ml-2 group p-1.5 hover:bg-gray-400 rounded-full transition-colors duration-200"
                         >
                           <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -292,9 +501,11 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                 {rankingDisplayCount < rankingItems.length ? (
                   <div className="mt-6">
                     <div className="relative flex items-center justify-center">
-                      <button
+                      <motion.button
                         onClick={handleShowMoreRankings}
                         className="group relative py-3 transition-all duration-500"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                       >
                         {rankingDisplayCount <= 3 && (
                           <>
@@ -307,7 +518,7 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                             もっと見る
                           </span>
                         </div>
-                      </button>
+                      </motion.button>
                       {rankingDisplayCount > 3 && (
                         <button
                           onClick={() => setRankingDisplayCount(3)}
@@ -334,10 +545,18 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                     </div>
                   </div>
                 )}
-              </div>
+              </motion.div>
               
               {/* 質問箱 */}
-              <div id="question-box" className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-3">
+              <motion.div 
+                ref={questionBoxRef}
+                id="question-box"
+                initial="hidden"
+                animate={questionBoxInView ? "visible" : "hidden"}
+                variants={scrollRevealVariants}
+                whileHover={{ y: -5 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+              >
                 <div className="mb-4">
                   <div className="relative flex justify-end items-center mb-2">
                     <div className="absolute inset-x-0 flex justify-center">
@@ -351,30 +570,45 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
                   </div>
                 </div>
                 <QuestionBox onQuestionClick={() => setShowQuestionModal(true)} />
-              </div>
+              </motion.div>
 
               {/* アイディア投稿ボタン */}
-              <div className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-6">
-                <button
+              <motion.div 
+                ref={ideaRef}
+                className="backdrop-blur-[2px] bg-white/15 rounded-lg shadow-lg p-6"
+                initial="hidden"
+                animate={ideaInView ? "visible" : "hidden"}
+                variants={scrollRevealVariants}
+                whileHover={{ y: -5 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+              >
+                <motion.button
                   onClick={() => setShowIdeaModal(true)}
                   className="w-full px-4 py-2.5 text-sm font-light tracking-wider text-white/90 bg-primary-500/90 hover:bg-primary-500 rounded-lg transition-all duration-500 shadow-sm hover:shadow-md"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
                 >
                   アイディアを投稿する
-                </button>
-              </div>
-            </div>
-          </div>
+                </motion.button>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </main>
 
         {/* トップへ戻るボタン */}
-        <div
+        <motion.div
           className={`fixed right-4 bottom-4 z-50 transform transition-all duration-300 ${
             showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
           }`}
+          initial={{ scale: 0 }}
+          animate={{ scale: showScrollTop ? 1 : 0 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 10 }}
         >
-          <button
+          <motion.button
             onClick={scrollToTop}
             className="p-2 bg-white/90 backdrop-blur-sm rounded-full border border-gray-200/80 shadow-lg hover:shadow-xl hover:bg-white transition-all duration-300 group"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
           >
             <svg
               className="w-4 h-4 text-gray-600 group-hover:text-primary-600 transform group-hover:-translate-y-0.5 transition-all duration-300"
@@ -384,8 +618,8 @@ export const FanSiteTemplate: React.FC<FanSiteTemplateProps> = ({
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
             </svg>
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       </div>
 
       {/* モーダル（ルートレベルで表示） */}
